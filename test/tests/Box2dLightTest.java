@@ -52,6 +52,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 	BitmapFont font;
 	TextureRegion textureRegion;
 	Texture bg;
+	Texture transparentBg;
 
 	/** our box2D world **/
 	World world;
@@ -96,6 +97,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		textureRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/marble.png")));
 		bg = new Texture(Gdx.files.internal("data/bg.png"));
+		transparentBg = new Texture(Gdx.files.internal("data/hole.png"));
 
 		createPhysicsWorld();
 		Gdx.input.setInputProcessor(this);
@@ -132,10 +134,11 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(camera.combined);
-		batch.disableBlending();
+//		batch.disableBlending();
 		batch.begin();
 		{
 			batch.draw(bg, -viewportWidth / 2f, 0, viewportWidth, viewportHeight);
+			batch.draw(transparentBg, -viewportWidth / 2f, 0, viewportWidth, viewportHeight);
 			batch.enableBlending();
 			for (int i = 0; i < BALLSNUM; i++) {
 				Body ball = balls.get(i);
@@ -152,8 +155,16 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		}
 		batch.end();
 
+		/** transparent stuff BEGIN */
+		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE1);
+//		transparentBg.flip(false, true);
+		transparentBg.bind();
+		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE0);
+		/** transparent stuff END */
+
 		/** BOX2D LIGHT STUFF BEGIN */
 		rayHandler.setCombinedMatrix(camera);
+
 
 		if (stepped) rayHandler.update();
 		rayHandler.render();

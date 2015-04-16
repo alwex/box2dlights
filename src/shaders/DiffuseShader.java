@@ -24,12 +24,18 @@ public class DiffuseShader {
 				+ "#endif\n" //
 				+ "varying MED vec2 v_texCoords;\n" //
 				+ "uniform sampler2D u_texture;\n" //
+				+ "uniform sampler2D u_texture1;\n" //
 				+ "uniform  vec4 ambient;\n"
 					+ "void main()\n"//
 				+ "{\n" //
-				+ "gl_FragColor.rgb = (ambient.rgb + texture2D(u_texture, v_texCoords).rgb);\n"
-				+ "gl_FragColor.a = 1.0;\n"
-					+ "}\n";
+				+ "  vec4 backColor = texture2D(u_texture1, vec2(v_texCoords.x, 1.0 - v_texCoords.y));\n"
+				+ "  if (backColor.a > 0.0) {\n"
+				+ "    gl_FragColor.rgb = (ambient.rgb + texture2D(u_texture, v_texCoords).rgb);\n"
+				+ "    gl_FragColor.a = backColor.a;\n"
+				+ "  } else {\n"
+				+ "    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.0);"
+				+ "  }"
+				+ "}\n";
 		ShaderProgram.pedantic = false;
 		ShaderProgram shadowShader = new ShaderProgram(vertexShader,
 					fragmentShader);

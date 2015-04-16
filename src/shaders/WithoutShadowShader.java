@@ -27,7 +27,7 @@ public final class WithoutShadowShader {
 				+ "uniform sampler2D u_texture;\n" //
 				+ "void main()\n"//
 				+ "{\n" //
-				+ "gl_FragColor = texture2D(u_texture, v_texCoords);\n"				
+				+ "gl_FragColor = texture2D(u_texture, v_texCoords);\n"
 				+ "}\n";
 		ShaderProgram.pedantic = false;
 		ShaderProgram woShadowShader = new ShaderProgram(vertexShader,

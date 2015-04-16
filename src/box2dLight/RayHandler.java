@@ -312,6 +312,7 @@ public class RayHandler implements Disposable {
 			for (Light light : lightList) {
 				light.render();
 			}
+
 		}
 		lightShader.end();
 

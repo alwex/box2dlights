@@ -55,7 +55,8 @@ class LightMap {
 				shader.setUniformf("ambient", c.r * c.a, c.g * c.a,
 						c.b * c.a, 1f - c.a);
 			}
-		//	shader.setUniformi("u_texture", 0);
+			shader.setUniformi("u_texture", 0);
+			shader.setUniformi("u_texture1", 1);
 			lightMapMesh.render(shader, GL20.GL_TRIANGLE_FAN);
 			shader.end();
 		} else if (needed) {

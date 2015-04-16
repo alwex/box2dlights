@@ -59,12 +59,16 @@ public abstract class PositionalLight extends Light {
 		start.x = x;
 		start.y = y;
 
-		lightMesh = new Mesh(VertexDataType.VertexArray, false, vertexNum, 0, new VertexAttribute(Usage.Position, 2,
-			"vertex_positions"), new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
-			new VertexAttribute(Usage.Generic, 1, "s"));
-		softShadowMesh = new Mesh(VertexDataType.VertexArray, false, vertexNum * 2, 0, new VertexAttribute(Usage.Position, 2,
-			"vertex_positions"), new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
-			new VertexAttribute(Usage.Generic, 1, "s"));
+		lightMesh = new Mesh(VertexDataType.VertexArray, false, vertexNum, 0,
+				new VertexAttribute(Usage.Position, 2, "vertex_positions"),
+				new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
+				new VertexAttribute(Usage.Generic, 1, "s")
+		);
+		softShadowMesh = new Mesh(VertexDataType.VertexArray, false, vertexNum * 2, 0,
+				new VertexAttribute(Usage.Position, 2, "vertex_positions"),
+				new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
+				new VertexAttribute(Usage.Generic, 1, "s")
+		);
 		setMesh();
 	}
 	

@@ -22,12 +22,15 @@ public final class ShadowShader {
 			+ "#endif\n" //
 				+ "varying MED vec2 v_texCoords;\n" //
 				+ "uniform sampler2D u_texture;\n" //
-				+ "uniform vec4 ambient;\n"				
+				+ "uniform sampler2D u_texture1; \n" //
+				+ "uniform vec4 ambient;\n"
 				+ "void main()\n"//
 				+ "{\n" //
 				+ "vec4 c = texture2D(u_texture, v_texCoords);\n"//
-				+ "gl_FragColor.rgb = c.rgb * c.a + ambient.rgb;\n"//
-				+ "gl_FragColor.a = ambient.a - c.a;\n"//				
+				+ "vec4 c0 = texture2D(u_texture1, v_texCoords);\n"//
+				+ "//gl_FragColor.rgb = c.rgb * c.a + ambient.rgb;\n"//
+				+ "//gl_FragColor.a = ambient.a - c.a;\n"//
+				+ "//gl_FragColor = c0;\n"
 				+ "}\n";
 		ShaderProgram.pedantic = false;
 		ShaderProgram shadowShader = new ShaderProgram(vertexShader,
