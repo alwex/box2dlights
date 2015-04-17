@@ -569,5 +569,11 @@ public class RayHandler implements Disposable {
 	public FrameBuffer getLightMapBuffer() {
 		return lightMap.frameBuffer;
 	}
-	
+
+	public void setMask(Texture mask) {
+		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE1);
+		mask.bind();
+		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE0);
+	}
+
 }

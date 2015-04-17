@@ -75,7 +75,8 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 	boolean showText = true;
 	
 	/** BOX2D LIGHT STUFF */
-	RayHandler rayHandler;
+	RayHandler rayHandlerFront;
+	RayHandler rayHandlerBack;
 	
 	ArrayList<Light> lights = new ArrayList<Light>(BALLSNUM);
 	
@@ -109,9 +110,13 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		RayHandler.setGammaCorrection(true);
 		RayHandler.useDiffuseLight(true);
 		
-		rayHandler = new RayHandler(world);
-		rayHandler.setAmbientLight(0f, 0f, 0f, 0.5f);
-		rayHandler.setBlurNum(3);
+		rayHandlerFront = new RayHandler(world);
+		rayHandlerFront.setAmbientLight(0f, 0f, 0f, 0.5f);
+		rayHandlerFront.setBlurNum(3);
+
+		rayHandlerBack = new RayHandler(world);
+		rayHandlerBack.setAmbientLight(0f, 0f, 0f, 0.5f);
+		rayHandlerBack.setBlurNum(3);
 
 		initPointLights();
 		/** BOX2D LIGHT STUFF END */
@@ -155,24 +160,25 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		}
 		batch.end();
 
+		/** BOX2D LIGHT STUFF BEGIN */
+		rayHandlerBack.setCombinedMatrix(camera);
+		if (stepped) rayHandlerBack.update();
+//		rayHandlerBack.render();
+
 		/** transparent stuff BEGIN */
-		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE1);
-//		transparentBg.flip(false, true);
-		transparentBg.bind();
-		Gdx.gl.glActiveTexture(Gdx.gl20.GL_TEXTURE0);
+		rayHandlerFront.setMask(transparentBg);
 		/** transparent stuff END */
 
-		/** BOX2D LIGHT STUFF BEGIN */
-		rayHandler.setCombinedMatrix(camera);
+		rayHandlerFront.setCombinedMatrix(camera);
+		if (stepped) rayHandlerFront.update();
+		rayHandlerFront.render();
 
 
-		if (stepped) rayHandler.update();
-		rayHandler.render();
 		/** BOX2D LIGHT STUFF END */
 
 		long time = System.nanoTime();
 
-		boolean atShadow = rayHandler.pointAtShadow(testPoint.x,
+		boolean atShadow = rayHandlerFront.pointAtShadow(testPoint.x,
 				testPoint.y);
 		aika += System.nanoTime() - time;
       
@@ -237,7 +243,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		clearLights();
 		for (int i = 0; i < BALLSNUM; i++) {
 			PointLight light = new PointLight(
-					rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE, 0f, 0f);
+					rayHandlerFront, RAYS_PER_BALL, null, LIGHT_DISTANCE, 0f, 0f);
 			light.attachToBody(balls.get(i), RADIUS / 2f, RADIUS / 2f);
 			light.setColor(
 					MathUtils.random(),
@@ -252,7 +258,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		clearLights();
 		for (int i = 0; i < BALLSNUM; i++) {
 			ConeLight light = new ConeLight(
-					rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE,
+					rayHandlerFront, RAYS_PER_BALL, null, LIGHT_DISTANCE,
 					0, 0, 0f, MathUtils.random(15f, 40f));
 			light.attachToBody(
 					balls.get(i),
@@ -270,7 +276,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		clearLights();
 		for (int i = 0; i < BALLSNUM; i++) {
 			ChainLight light = new ChainLight(
-					rayHandler, RAYS_PER_BALL, null, LIGHT_DISTANCE, 1,
+					rayHandlerFront, RAYS_PER_BALL, null, LIGHT_DISTANCE, 1,
 					new float[]{-5, 0, 0, 3, 5, 0});
 			light.attachToBody(
 					balls.get(i),
@@ -291,7 +297,7 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 		sunDirection = MathUtils.random(0f, 360f);
 		
 		DirectionalLight light = new DirectionalLight(
-				rayHandler, 4 * RAYS_PER_BALL, null, sunDirection);
+				rayHandlerFront, 4 * RAYS_PER_BALL, null, sunDirection);
 		lights.add(light);
 	}
 	
@@ -440,7 +446,8 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 
 	@Override
 	public void dispose() {
-		rayHandler.dispose();
+		rayHandlerBack.dispose();
+		rayHandlerFront.dispose();
 		world.dispose();
 	}
 
@@ -501,16 +508,16 @@ public class Box2dLightTest extends InputAdapter implements ApplicationListener 
 			return true;
 			
 		case Input.Keys.F9:
-			rayHandler.diffuseBlendFunc.reset();
+			rayHandlerFront.diffuseBlendFunc.reset();
 			return true;
 			
 		case Input.Keys.F10:
-			rayHandler.diffuseBlendFunc.set(
+			rayHandlerFront.diffuseBlendFunc.set(
 					GL20.GL_DST_COLOR, GL20.GL_SRC_COLOR);
 			return true;
 			
 		case Input.Keys.F11:
-			rayHandler.diffuseBlendFunc.set(
+			rayHandlerFront.diffuseBlendFunc.set(
 					GL20.GL_SRC_COLOR, GL20.GL_DST_COLOR);
 			return true;
 			
